@@ -99,13 +99,7 @@ module fsqrt(
                     end else begin
                         operand_q <= {23'd0, 1'b1, mant_in, 1'd0};
                     end
-                    
-                    // LUT is Q1.23 (bit 23 = 1.0), convert to Q24.24 (bit 24 = 1.0)
-                    // Shift left by 1: {rsqrt_lut[index], 24'd0} gives bit 47, we want bit 24
-                    // So we need to shift right by 23 to move bit 47 to bit 24
-                    // Actually: {lut, 24'd0} puts lut[23] at bit 47, shift right 23 puts it at bit 24
                     x <= {24'd0, rsqrt_lut[index]} << 1;
-                    
                     if (exp_odd) begin
                         // 1/sqrt(2) = 0.707... in Q1.23 is 0x5A827A (5931642 decimal)
                         temp <= {24'd0, 24'd5931642} << 1;
@@ -207,3 +201,4 @@ module fsqrt(
         end
     end
 endmodule
+
