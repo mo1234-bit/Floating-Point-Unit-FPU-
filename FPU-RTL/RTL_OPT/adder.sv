@@ -34,7 +34,7 @@ reg       [2:0] state,state_1,past_state,state_2,state_3;
     
     // Output register
     reg [31:0] s_output_z;
-    
+       reg signed [9:0] shift_amount;
     // Leading zero counter
     wire [4:0] sum_lz;
     fast_lzc lzc(.mantissa(sum[26:3]), .leading_zeros(sum_lz));
@@ -193,7 +193,7 @@ else begin
                     // Barrel shift with sticky bit preservation
                     if (larger_is_a) begin
                         if (exp_diff > 27) begin
-                            // Complete shift-out: set to zero with sticky
+                        
                             b_m <= 27'b1;
                         end
                         else if (exp_diff != 0) begin
@@ -251,14 +251,13 @@ NORM: begin
                         guard <= sum[2];
                         round_bit <= sum[1];
                         sticky <= sum[0];
-                        // No exponent adjustment needed
+                       
                     end
                     else begin
-                        // Need to left-shift to normalize
-                        // Check if we'll underflow into denormal range
+                      
                         if ($signed(z_e) - $signed({5'd0, sum_lz}) <= -126) begin
-                            // Will be denormal: only shift to reach exp = -126
-                            reg signed [9:0] shift_amount;
+                          
+                         
                             shift_amount = z_e + 126;
                             
                             if (shift_amount > 0 && shift_amount < 24) begin
@@ -373,4 +372,5 @@ module fast_lzc(
         endcase
     end
 endmodule
+
 
